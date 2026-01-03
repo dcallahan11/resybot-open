@@ -1,0 +1,41 @@
+{
+  "name": "resybot-open",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Local TypeScript CLI for scheduling and executing Resy reservation tasks",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "tsx watch src/index.ts menu",
+    "menu": "tsx src/index.ts menu",
+    "runner": "tsx src/index.ts runner",
+    "apply-config": "tsx src/index.ts apply-config",
+    "import-legacy": "tsx src/index.ts import-legacy",
+    "west-village-top-rated": "tsx src/index.ts west-village-top-rated",
+    "generate-weekend-reservations": "tsx src/index.ts generate-weekend-reservations",
+    "merge-reservations": "tsx src/index.ts merge-reservations",
+    "monitor-west-village-release": "tsx src/index.ts monitor-west-village-release",
+    "scrape-release-policies": "tsx src/index.ts scrape-release-policies",
+    "enrich-venues-metadata": "tsx src/index.ts enrich-venues-metadata",
+    "build": "tsup src/index.ts --format esm --target node20 --dts --sourcemap --clean",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@inquirer/prompts": "^7.4.1",
+    "commander": "^13.0.0",
+    "undici": "^7.1.0",
+    "zod": "^3.25.56"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.12",
+    "tsup": "^8.4.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}
+
+

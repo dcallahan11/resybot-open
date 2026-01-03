@@ -1,0 +1,74 @@
+[
+  {
+    "restaurantName": "Mamali",
+    "restaurantId": "92453",
+    "date": "2026-01-03",
+    "time": "20:15",
+    "flexMinutes": 45,
+    "partySize": 2,
+    "pollDelayMs": 250
+  },
+  {
+    "restaurantName": "4 Charles Prime Rib",
+    "restaurantId": "834",
+    "date": "2026-01-09",
+    "time": "20:15",
+    "flexMinutes": 45,
+    "partySize": 2,
+    "pollDelayMs": 250
+  },
+  {
+    "restaurantName": "Members Only West Village",
+    "restaurantId": "93974",
+    "date": "2026-01-10",
+    "time": "20:15",
+    "flexMinutes": 45,
+    "partySize": 2,
+    "pollDelayMs": 250
+  },
+  {
+    "restaurantName": "Sushiro the Handroll Bar",
+    "restaurantId": "88182",
+    "date": "2026-01-16",
+    "time": "20:15",
+    "flexMinutes": 45,
+    "partySize": 2,
+    "pollDelayMs": 250
+  },
+  {
+    "restaurantName": "Quique Crudo",
+    "restaurantId": "83129",
+    "date": "2026-01-17",
+    "time": "20:15",
+    "flexMinutes": 45,
+    "partySize": 2,
+    "pollDelayMs": 250
+  },
+  {
+    "restaurantName": "Sushi Kai - West Village",
+    "restaurantId": "73264",
+    "date": "2026-01-23",
+    "time": "20:15",
+    "flexMinutes": 45,
+    "partySize": 2,
+    "pollDelayMs": 250
+  },
+  {
+    "restaurantName": "Leitao",
+    "restaurantId": "65639",
+    "date": "2026-01-24",
+    "time": "20:15",
+    "flexMinutes": 45,
+    "partySize": 2,
+    "pollDelayMs": 250
+  },
+  {
+    "restaurantName": "Sushi Lin West Village",
+    "restaurantId": "73561",
+    "date": "2026-01-30",
+    "time": "20:15",
+    "flexMinutes": 45,
+    "partySize": 2,
+    "pollDelayMs": 250
+  }
+]

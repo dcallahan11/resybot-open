@@ -67,3 +67,14 @@ logs/
 
 # Build artifacts
 *.spec 
+
+# Node/TypeScript
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Local app data (secrets + tasks + schedules)
+data/
+
+# Local bot config (contains secrets)
+resybot.config.json

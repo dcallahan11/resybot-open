@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "discordWebhook": "https://discord.com/api/webhooks/REPLACE_ME",
+  "proxies": [
+    "ip:port:user:pass"
+  ],
+  "accounts": [
+    {
+      "name": "Primary",
+      "authToken": "REPLACE_ME_PRIMARY_AUTH_TOKEN",
+      "paymentId": 0
+    },
+    {
+      "name": "Backup",
+      "authToken": "REPLACE_ME_BACKUP_AUTH_TOKEN",
+      "paymentId": 0
+    }
+  ],
+  "reservations": [
+    {
+      "restaurantName": "Example Restaurant",
+      "restaurantId": "REPLACE_ME_VENUE_ID",
+      "date": "2026-01-15",
+      "time": "19:30",
+      "flexMinutes": 30,
+      "partySize": 2,
+      "pollDelayMs": 250,
+      "run": {
+        "kind": "once",
+        "runAt": "2026-01-15T09:59:50-05:00",
+        "durationSec": 12,
+        "enabled": true
+      }
+    }
+  ]
+}
+
+

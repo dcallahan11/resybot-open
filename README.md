@@ -1,122 +1,99 @@
-# ResyGrabber - Restaurant Reservation Bot
+# ResyBot (TypeScript CLI)
 
-\*THIS USED TO BE CLOSED SOURCE, BUT I QUICKLY VIBECODED AN OPEN SOURCE VERSION WITHOUT LICENSING LOGIC. I ALSO QUICKLY MERGED TWO REPOS INTO THIS ONE. PLEASE LET ME KNOW IF ANY ISSUES ARE ENCOUNTERED, BUT YOU CAN AT LEAST EXAMINE THE CODE. FEEL FREE TO REACH OUT TO LEARN MORE ABOUT HOW I CREATED THIS!
-
-This is an open-source tool to help manage restaurant reservations on Resy.com. It was previously a SaaS product but has been converted to a locally runnable application with no authentication required. This is the first SAAS product that I've released and it was very fun to work on! I am open sourcing this now though because New York passed laws making it illegal to sell dinner reservations.
+This repo contains a **local, TypeScript-based CLI** for creating a list of reservation tasks and **executing them automatically at scheduled times**.
 
 ## Features
 
 - Create and manage reservation tasks
-- Use proxies to avoid IP blocks
-- Schedule tasks to run at specific times
-- Automatically book reservations when they become available
-- Bypass captchas by using an undocumented/deprecated API endpoint
+- Optional proxy support
+- Persisted schedules (once/daily/weekly)
+- Auto-execution runner (`runner` mode) intended to stay running
+- Discord webhook notifications
 
-## Setup and Installation
+## Requirements
 
-### Requirements
+- Node.js 20+
+- npm
 
-- Python 3.7 or higher
-- pip (Python package manager)
+## Install
 
-### Installation
-
-1. Clone this repository:
-
-```
-git clone https://github.com/yourusername/resybot-open.git
-cd resybot-open
+```bash
+npm install
 ```
 
-2. Install the dependencies for both client and server:
+## Run
 
-```
-cd client
-pip install -r requirements.txt
-cd ../server
-pip install -r requirements.txt
-```
+### Interactive menu (recommended)
 
-## Running the Application
-
-### Simple Start (Recommended)
-
-To start both the server and client with a single command:
-
-```
-python start.py
+```bash
+npm run menu
 ```
 
-This will launch both the server and client components automatically.
+### Config file workflow (simple + repeatable)
 
-### Manual Start
+Edit the gitignored [`resybot.config.json`](resybot.config.json) (accounts + desired reservations). The **first account is used as primary**, and the **second account is used as a backup** when booking fails.
 
-Alternatively, you can start each component separately:
+1) Copy the example (optional):
 
-1. Start the Server:
-
-```
-cd server
-python server.py
+```bash
+copy resybot.config.example.json resybot.config.json
 ```
 
-2. Start the Client (in a separate terminal):
+2) Edit `resybot.config.json` with your:
+- accounts (auth token + payment id)
+- reservations (restaurantId/venueId, date, time, partySize)
+- optional `run` schedule for when to start trying
 
+3) Apply the config into `data/`:
+
+```bash
+npm run apply-config
 ```
-cd client
-python entry.py
+
+4) Start the runner:
+
+```bash
+npm run runner
 ```
 
-The client will launch a menu-driven interface where you can:
+### Runner (keeps schedules active)
 
-- Add and manage reservation tasks
-- Configure proxies
-- Manage Resy.com accounts
-- View and cancel existing reservations
-- Schedule and run tasks
+```bash
+npm run runner
+```
 
-## Configuration
+## Data storage
 
-### Adding Resy.com Accounts
+This app persists data in the gitignored `data/` directory (configurable via `RESYBOT_DATA_DIR`):
 
-1. From the main menu, select "4) Manage Accounts"
-2. Follow the prompts to add your Resy.com account information
-   - You'll need your Auth Token and Payment ID from Resy.com
+- `data/accounts.json`
+- `data/tasks.json`
+- `data/schedules.json`
+- `data/proxies.json`
+- `data/info.json` (Discord webhook)
 
-### Adding Proxies (Optional but Recommended)
+## Migrating from the legacy Python version
 
-1. From the main menu, select "2) Proxies"
-2. Add your proxy information to avoid IP rate limits
+If you previously used the Python version’s JSON files, you can import them:
 
-### Creating Tasks
+```bash
+npm run import-legacy
+```
 
-1. From the main menu, select "1) Show tasks"
-2. Select "a) Add task"
-3. Follow the prompts to create a new reservation task
+By default this imports from `legacy-python/client`. To specify a different folder:
 
-### Running Tasks
+```bash
+npm run import-legacy -- --from path/to/legacy/client
+```
 
-1. From the main menu, select "7) Start Tasks"
+## Legacy Python (for reference)
 
-## Contributing
+The previous Python implementation lives under `legacy-python/`.
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+## Notes / responsible use
 
-## Open Source Changes
-
-This project was previously a SaaS product with the following licensing/authentication requirements:
-
-- Required a valid license key through Whop
-- Client connected to a remote server hosted on Railway
-- HWID validation to prevent license key sharing
-
-The following changes were made to open source the project:
-
-- Removed all licensing and authentication requirements
-- Configured the client to connect to a local server instead of the remote server
-- Added a simple startup script to run both client and server with one command
-- Updated documentation with clear instructions for local usage
+Use responsibly and comply with Resy’s terms and any applicable local laws. This tool is intended for legitimate personal use.
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT — see [`LICENSE`](LICENSE).
