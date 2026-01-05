@@ -392,6 +392,35 @@ export class ResyClient {
 
     return await readJsonOrThrow<any>(url, res);
   }
+
+  /**
+   * Returns Resy "location" objects near a given coordinate (Resy uses these for city pages).
+   * Useful for resolving a locationSlug (e.g. "new-york-ny") for /3/venue calls.
+   */
+  async getLocationConfig(input: {
+    latitude: number;
+    longitude: number;
+    proxy?: ProxyInput;
+    signal?: AbortSignal;
+  }): Promise<any[]> {
+    const url =
+      `https://api.resy.com/3/location/config?lat=${encodeURIComponent(String(input.latitude))}` +
+      `&long=${encodeURIComponent(String(input.longitude))}`;
+
+    const dispatcher = this.dispatcherForProxy(input.proxy);
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        ...this.baseHeaders(),
+        Origin: "https://resy.com",
+        Referer: "https://resy.com/",
+      },
+      ...(dispatcher ? { dispatcher } : {}),
+      ...(input.signal ? { signal: input.signal } : {}),
+    });
+
+    return await readJsonOrThrow<any[]>(url, res);
+  }
 }
 
 

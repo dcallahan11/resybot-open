@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { Command } from "commander";
+import path from "node:path";
 import { runMenu } from "./cli/menu";
 import { runRunner } from "./runner/runnerMain";
 
@@ -238,6 +239,121 @@ program
         limit: Number(opts.limit),
         delayMs: Number(opts.delayMs),
         force: Boolean(opts.force),
+      });
+      console.log(JSON.stringify(res, null, 2));
+    },
+  );
+
+const locationCmd = program.command("location").description("Location workspace workflow (discover → enrich → review → run)");
+
+locationCmd
+  .command("init")
+  .description("Create a location workspace from a place string (geocode → discover venues → enrich/cache → write report)")
+  .requiredOption("--place <text>", "Place string to geocode (e.g. \"West Village, New York, NY\")")
+  .option("--key <key>", "Location key (folder name). Defaults to a slug of the place string.")
+  .option("--base-dir <dir>", "Base directory for location workspaces", "data/locations")
+  .option("--force-geocode", "Force re-geocoding even if cached", false)
+  .option("--radius-m <n>", "Search radius in meters", "2000")
+  .option("--min-rating <n>", "Minimum rating (0-5)", "4.5")
+  .option("--min-rating-count <n>", "Minimum rating count (filter out low-sample venues)", "50")
+  .option("--query <q>", "Optional Resy search query (defaults to empty)", "")
+  .option("--neighborhood-contains <text>", "Optional neighborhood substring filter (case-insensitive)", "")
+  .option("--day <yyyy-mm-dd>", "Day used for Resy availability context", todayLocalYYYYMMDD())
+  .option("--party-size <n>", "Party size used for Resy availability context", "2")
+  .option("--auto-enable-top <n>", "How many top venues to enable by default", "15")
+  .option("--enrich-delay-ms <ms>", "Delay between venue enrich calls (rate limiting)", "650")
+  .option("--skip-enrich", "Skip enrichment/caching (discovery only)", false)
+  .action(
+    async (opts: {
+      place: string;
+      key?: string;
+      baseDir: string;
+      forceGeocode?: boolean;
+      radiusM: string;
+      minRating: string;
+      minRatingCount: string;
+      query: string;
+      neighborhoodContains: string;
+      day: string;
+      partySize: string;
+      autoEnableTop: string;
+      enrichDelayMs: string;
+      skipEnrich?: boolean;
+    }) => {
+      const { locationInit } = await import("./scripts/locationInit");
+      const res = await locationInit({
+        place: opts.place,
+        ...(opts.key ? { locationKey: opts.key } : {}),
+        baseDir: opts.baseDir,
+        forceGeocode: Boolean(opts.forceGeocode),
+        radiusMeters: Number(opts.radiusM),
+        minRating: Number(opts.minRating),
+        minRatingCount: Number(opts.minRatingCount),
+        query: opts.query,
+        ...(opts.neighborhoodContains.trim().length ? { neighborhoodContains: opts.neighborhoodContains } : {}),
+        day: opts.day,
+        partySize: Number(opts.partySize),
+        autoEnableTop: Number(opts.autoEnableTop),
+        enrichDelayMs: Number(opts.enrichDelayMs),
+        skipEnrich: Boolean(opts.skipEnrich),
+      });
+      console.log(JSON.stringify(res, null, 2));
+    },
+  );
+
+locationCmd
+  .command("start")
+  .description("Generate reservations + schedules from enabled venues, merge into config, apply, and optionally start runner")
+  .requiredOption("--location <key>", "Location key (folder name under base-dir)")
+  .option("--base-dir <dir>", "Base directory for location workspaces", "data/locations")
+  .option("--config <file>", "Config file to merge into", "resybot.config.json")
+  .option("--mode <append|replace>", "Append or replace config.reservations", "replace")
+  .option("--start-date <yyyy-mm-dd>", "Start date for finding Fri/Sat dining dates (defaults to today)")
+  .option("--party-size <n>", "Party size", "2")
+  .option("--time <hh:mm>", "Desired dining time (e.g. 20:15)", "20:15")
+  .option("--flex-minutes <n>", "Flex minutes around desired time", "45")
+  .option("--poll-delay-ms <n>", "Polling delay in ms", "250")
+  .option("--default-release-time <hh:mm>", "Fallback release time if venue has no explicit one", "09:00")
+  .option("--unknown-release <default|skip>", "If release policy is unknown, default behavior", "default")
+  .option("--start-early-sec <n>", "Start polling this many seconds before the release time", "10")
+  .option("--duration-sec <n>", "How long to run the task when it fires", "120")
+  .option("--no-apply", "Do not apply config into data/ store (just generate + merge)")
+  .option("--run", "Start runner after apply-config (blocks)", false)
+  .action(
+    async (opts: {
+      location: string;
+      baseDir: string;
+      config: string;
+      mode: "append" | "replace";
+      startDate?: string;
+      partySize: string;
+      time: string;
+      flexMinutes: string;
+      pollDelayMs: string;
+      defaultReleaseTime: string;
+      unknownRelease: "default" | "skip";
+      startEarlySec: string;
+      durationSec: string;
+      apply: boolean;
+      run?: boolean;
+    }) => {
+      const { locationStart } = await import("./scripts/locationStart");
+      const locationDir = path.join(opts.baseDir, opts.location);
+      const res = await locationStart({
+        locationDir,
+        configFile: opts.config,
+        mode: opts.mode === "append" ? "append" : "replace",
+        ...(opts.startDate ? { startDate: opts.startDate } : {}),
+        partySize: Number(opts.partySize),
+        time: opts.time,
+        flexMinutes: Number(opts.flexMinutes),
+        pollDelayMs: Number(opts.pollDelayMs),
+        defaultReleaseTime: opts.defaultReleaseTime,
+        unknownReleaseMode: opts.unknownRelease === "skip" ? "skip" : "default",
+        startEarlySec: Number(opts.startEarlySec),
+        durationSec: Number(opts.durationSec),
+        apply: Boolean(opts.apply),
+        runRunner: Boolean(opts.run),
       });
       console.log(JSON.stringify(res, null, 2));
     },

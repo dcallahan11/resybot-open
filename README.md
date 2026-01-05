@@ -21,6 +21,34 @@ This repo contains a **local, TypeScript-based CLI** for creating a list of rese
 npm install
 ```
 
+## Location workflow (discover → enrich → review → start)
+
+This repo supports a **file-driven location workflow**:
+
+1) Create a location workspace from a place string (geocodes + discovers top-rated venues, then enriches/caches metadata):
+
+```bash
+npm run location:init -- --place "West Village, New York, NY" --radius-m 2000 --min-rating 4.5 --min-rating-count 50
+```
+
+This writes:
+- `data/locations/<locationKey>/location.json`
+- `data/locations/<locationKey>/venues.json`
+- `data/locations/<locationKey>/venues.report.md`
+- raw API caches under `data/venue-meta/<locationKey>/<venueId>/{venue.json,config.json}`
+
+2) Review and select restaurants:
+- Edit `data/locations/<locationKey>/venues.json` and flip `enabled` true/false
+- Or skim `data/locations/<locationKey>/venues.report.md`
+
+3) Generate reservations + schedules and apply them into the bot:
+
+```bash
+npm run location:start -- --location <locationKey> --mode replace --party-size 2 --time 20:15 --flex-minutes 45
+```
+
+Add `--run` to start the runner immediately (blocks in the foreground).
+
 ## Run
 
 ### Interactive menu (recommended)
